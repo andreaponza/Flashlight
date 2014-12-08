@@ -34,34 +34,16 @@ from google.appengine.api import users
 import bs4
 import base64
 import hashlib
-
-class Plugin(ndb.Model):
-  info_json = ndb.TextProperty()
-  categories = ndb.StringProperty(repeated=True)
-  name = ndb.StringProperty()
-  zip_url = ndb.StringProperty()
-  added = ndb.DateTimeProperty(auto_now_add=True)
-  approved = ndb.BooleanProperty(default=False)
-  secret = ndb.StringProperty()
-  notes = ndb.TextProperty()
-  icon_url = ndb.StringProperty()
-  screenshot_url = ndb.StringProperty()
-  zip_md5 = ndb.StringProperty()
-
-  @classmethod
-  def by_name(cls, name):
-    plugins = Plugin.query(Plugin.name == name, Plugin.approved == True).fetch()
-    if len(plugins) > 0:
-      return plugins[0]
-    else:
-      return None
+import model
+from model import Plugin
+from search import search_plugins
 
 def send_upload_form(request, message=None):
   request.response.write(template("upload.html", {"upload_url": blobstore.create_upload_url('/post_upload'), "message": message, "admin": users.is_current_user_admin()}))
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        self.redirect('/upload')
+        self.response.write(template("index.html"))
 
 class UploadHandler(webapp2.RequestHandler):
   def get(self):
@@ -78,7 +60,6 @@ def read_plugin_info(plugin, zip_data):
   archive = zipfile.ZipFile(file)
   has_info = False
   for name in archive.namelist():
-    print name
     if name.endswith('/info.json'):
       data = json.load(archive.open(name))
       plugin.name = data['name']
@@ -141,10 +122,14 @@ class PostUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
     if admin:
       existing = Plugin.by_name(plugin.name)
       if existing:
-        existing.approved = False
+        plugin.downloads += existing.downloads
+        plugin.put()
+        existing.disable()
+        existing.downloads = 0
         existing.put()
-      plugin.approved = True
     plugin.put()
+    if admin:
+      plugin.enable()
 
     if console_key != None:
       self.response.write({"success": True})
@@ -155,18 +140,26 @@ class PostUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 
 class Directory(webapp2.RequestHandler):
   def get(self):
-    category = self.request.get('category')
     languages = self.request.get('languages', '').split(',') + ['en']
-    plugins = []
-    for p in Plugin.query(Plugin.categories == category, Plugin.approved == True):
+    category = self.request.get('category', None)
+    search = self.request.get('search', None)
+    if category:
+      plugins = list(Plugin.query(Plugin.categories == category, Plugin.approved == True))
+      plugins = stable_daily_shuffle(plugins)
+    elif search:
+      plugins = search_plugins(search)
+    else:
+      plugins = []
+    plugin_dicts = []
+    for p in plugins:
       plugin = json.loads(p.info_json)
       plugin['displayName'] = get_localized_key(plugin, "displayName", languages, "")
       plugin['description'] = get_localized_key(plugin, "description", languages, "")
       plugin['examples'] = get_localized_key(plugin, "examples", languages, [])
       plugin['model'] = p
       plugin['install_url'] = 'install://_?' + urllib.urlencode([("zip_url", p.zip_url), ("name", p.name.encode('utf8'))])
-      plugins.append(plugin)
-    self.response.write(template("directory.html", {"plugins": plugins}))
+      plugin_dicts.append(plugin)
+    self.response.write(template("directory.html", {"plugins": plugin_dicts, "browse": self.request.get('browse', '')!='', "search": search}))
 
 class ServeHandler(blobstore_handlers.BlobstoreDownloadHandler):
   def get(self, resource):
@@ -176,7 +169,7 @@ class ServeHandler(blobstore_handlers.BlobstoreDownloadHandler):
 
 def compute_categories():
     categories = set()
-    for p in Plugin.query():
+    for p in Plugin.query(Plugin.approved == True):
       for c in p.categories:
         categories.add(c)
     return categories
@@ -191,8 +184,7 @@ class Categories(webapp2.RequestHandler):
 
 class LogInstall(webapp2.RequestHandler):
   def get(self):
-    name = self.request.get(name)
-    pass # TODO
+    model.increment_download_count(self.request.get('name'))
 
 class Login(webapp2.RequestHandler):
   def get(self):

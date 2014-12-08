@@ -1,0 +1,7 @@
+{
+	"name": "netflix",
+	"displayName": "Search Netflix",
+	"displayName": "Netflix Suche",
+	"examples": ["netflix chuck", "n chuck"],
+	"categories": ["Search"]
+}

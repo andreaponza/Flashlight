@@ -46,13 +46,21 @@
                          ];
     return [comps URL];
 }
+- (NSURL *)URLForSearchQuery:(NSString *)query {
+    NSURLComponents *comps = [NSURLComponents componentsWithString:[NSString stringWithFormat:@"%@/directory", [[self class] APIRoot]]];
+    comps.queryItems = @[
+                         [NSURLQueryItem queryItemWithName:@"search" value:query],
+                         [NSURLQueryItem queryItemWithName:@"languages" value:[[NSLocale preferredLanguages] componentsJoinedByString:@","]]
+                         ];
+    return [comps URL];
+}
 - (void)logPluginInstall:(NSString *)name {
     NSString *endpoint = [NSString stringWithFormat:@"%@/log_install", [[self class] APIRoot]];
     NSURLComponents *comps = [NSURLComponents componentsWithString:endpoint];
     comps.queryItems = @[[NSURLQueryItem queryItemWithName:@"name" value:name]];
-    [[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:comps.URL] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    [[[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:comps.URL] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         // disregard result
-    }];
+    }] resume];
 }
 
 @end

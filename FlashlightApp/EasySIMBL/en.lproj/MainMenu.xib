@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14C78c" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="101000" identifier="macosx"/>
         <development version="5000" identifier="xcode"/>
@@ -22,7 +22,7 @@
                             <menuItem title="About Flashlight" id="58">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="orderFrontStandardAboutPanel:" target="-2" id="142"/>
+                                    <action selector="makeKeyAndOrderFront:" target="Nbs-13-Twb" id="WXN-fo-3ci"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="236">
@@ -341,6 +341,7 @@
                 <outlet property="pluginListController" destination="715" id="OyI-Qw-pUc"/>
                 <outlet property="tableView" destination="2Bw-eW-td2" id="2My-Fx-DJv"/>
                 <outlet property="useSIMBLSwitch" destination="cgt-Ry-pUm" id="m6y-V0-Lqj"/>
+                <outlet property="webView" destination="DEt-An-xUj" id="I1w-Qg-DeT"/>
                 <outlet property="window" destination="651" id="653"/>
             </connections>
         </customObject>
@@ -446,7 +447,9 @@
                     <webView id="DEt-An-xUj">
                         <rect key="frame" x="149" y="0.0" width="453" height="447"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12" plugInsEnabled="NO" javaEnabled="NO"/>
+                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12" plugInsEnabled="NO" javaEnabled="NO">
+                            <nil key="identifier"/>
+                        </webPreferences>
                         <connections>
                             <outlet property="frameLoadDelegate" destination="715" id="vlM-pm-tM0"/>
                             <outlet property="policyDelegate" destination="715" id="eGv-RY-hAh"/>
@@ -459,7 +462,7 @@
                             <rect key="frame" x="1" y="1" width="148" height="398"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <outlineView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="YEo-XA-tnD" id="76J-wG-jzB">
+                                <outlineView appearanceType="vibrantLight" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" selectionHighlightStyle="sourceList" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" indentationPerLevel="16" outlineTableColumn="YEo-XA-tnD" id="76J-wG-jzB">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" name="_sourceListBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -588,9 +591,29 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         </customView>
                     </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="E18DCE5D-A04B-49D0-94F9-418631669D3B" label="Custom View" paletteLabel="Custom View" id="sSL-rY-WNy">
+                        <nil key="toolTip"/>
+                        <size key="minSize" width="96" height="22"/>
+                        <size key="maxSize" width="119" height="22"/>
+                        <searchField key="view" wantsLayer="YES" verticalHuggingPriority="750" id="B2I-e5-KQB">
+                            <rect key="frame" x="0.0" y="14" width="119" height="22"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="5o2-5F-0um">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </searchFieldCell>
+                            <connections>
+                                <action selector="search:" target="715" id="OcS-7q-A7C"/>
+                            </connections>
+                        </searchField>
+                    </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="0Ui-sl-VA0"/>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
                     <toolbarItem reference="6NI-Ay-AA6"/>
+                    <toolbarItem reference="0Ui-sl-VA0"/>
+                    <toolbarItem reference="sSL-rY-WNy"/>
                 </defaultToolbarItems>
             </toolbar>
             <connections>
@@ -607,6 +630,7 @@
                 <outlet property="errorBanner" destination="eIK-Jf-OGb" id="bJL-om-cww"/>
                 <outlet property="errorButton" destination="9nN-QT-MfC" id="Jom-wc-gLW"/>
                 <outlet property="errorText" destination="4I6-zG-9ut" id="bIG-CJ-HIx"/>
+                <outlet property="searchField" destination="B2I-e5-KQB" id="CEZ-40-eaP"/>
                 <outlet property="sourceList" destination="76J-wG-jzB" id="LkR-LD-LdE"/>
                 <outlet property="tableView" destination="2Bw-eW-td2" id="Fpj-ZY-CR6"/>
                 <outlet property="toggleView" destination="9dh-Cp-Auf" id="H5c-0P-FHt"/>
@@ -617,7 +641,7 @@
         </customObject>
         <arrayController selectsInsertedObjects="NO" avoidsEmptySelection="NO" id="714"/>
         <customView id="9dh-Cp-Auf" userLabel="Toggle view">
-            <rect key="frame" x="0.0" y="0.0" width="273" height="40"/>
+            <rect key="frame" x="0.0" y="0.0" width="262" height="40"/>
             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
             <subviews>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="fPh-3V-djF">
@@ -637,10 +661,51 @@
                     </connections>
                 </customView>
             </subviews>
-            <point key="canvasLocation" x="225.5" y="589"/>
+            <point key="canvasLocation" x="220" y="589"/>
         </customView>
+        <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="Nbs-13-Twb">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="109" y="138" width="242" height="179"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="800"/>
+            <value key="minSize" type="size" width="242" height="179"/>
+            <value key="maxSize" type="size" width="242" height="179"/>
+            <view key="contentView" id="ML2-hK-xgc">
+                <rect key="frame" x="0.0" y="-6" width="242" height="179"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="bs8-1N-RgN">
+                        <rect key="frame" x="75" y="67" width="92" height="92"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="Icon" id="QLY-QW-30e"/>
+                    </imageView>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="b4m-8B-Vhn">
+                        <rect key="frame" x="18" y="42" width="206" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Flashlight" id="CKY-mr-H4g">
+                            <font key="font" metaFont="systemBold"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button id="no0-HV-O9k">
+                        <rect key="frame" x="0.0" y="20" width="242" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="inline" title="github.com/nate-parrott/Flashlight" bezelStyle="inline" alignment="center" inset="2" id="P0e-Mj-nLE">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystemBold"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="openURLFromButton:" target="494" id="G87-1n-uQT"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="-305" y="514.5"/>
+        </window>
     </objects>
     <resources>
+        <image name="Icon" width="512" height="512"/>
         <image name="NSActionTemplate" width="14" height="14"/>
     </resources>
 </document>
